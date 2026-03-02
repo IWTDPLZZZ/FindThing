@@ -36,4 +36,16 @@ class AuthService {
       return null;
     }
   }
+  Future<User?> AuthWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ]);
+    }
+    catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 }

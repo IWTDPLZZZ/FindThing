@@ -1,17 +1,37 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:find_thing/appbar.dart';
 import 'package:find_thing/desigh/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AuthPage extends StatelessWidget {
+import 'login.dart';
+
+class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
+
+  @override
+  State<AuthPage> createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
+  final AuthService _authService = AuthService();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppbarCustom(),
       body: SafeArea(
-        child: Center(
+        // child: SingleChildScrollView(
+          child: Center(    
           child: SizedBox(
             width: 350,
             child: Column(
@@ -23,6 +43,7 @@ class AuthPage extends StatelessWidget {
                 SizedBox(
                   width: 320,
                   child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       hintText: 'Email',
                       hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, fontFamily: 'Inter', color: gray, letterSpacing: 2.5),
@@ -39,6 +60,8 @@ class AuthPage extends StatelessWidget {
                 SizedBox(
                   width: 320,
                   child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Пароль',
                       hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, fontFamily: 'Inter', color: gray, letterSpacing: 2.5),
@@ -60,8 +83,32 @@ class AuthPage extends StatelessWidget {
                   
                   child: Text('Забыли пароль?'),
                 ),
-                ElevatedButton(
+                TextButton(
                   onPressed: () {},
+                 style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, fontFamily: 'Inter', color: memory, letterSpacing: 2.5),
+                 ),
+                 child: Text('Зарегистрироваться'),
+                 ),
+                 SizedBox(height: 20),
+                ElevatedButton(
+                  
+                  onPressed: () async {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    if (email.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Пожалуйста, заполните все поля')));
+                      return;
+                    }
+                    final user = await _authService.AuthWithEmail(email, password);
+                    if (user != null) {
+                      Navigator.pushNamed(context, '/main');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Не удалось войти')));
+                    }
+
+                  },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(350, 50),
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -95,9 +142,9 @@ class AuthPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _socialButton(context, 'assets/images/appleOfIcon.svg'),
+                    _socialButton(context, _authService.AuthWithApple, 'assets/images/appleOfIcon.svg'),
                     const SizedBox(width: 60),
-                    _socialButton(context, 'assets/images/gmailOfIcon.svg'),
+                    _socialButton(context, _authService.AuthWithGoogle, 'assets/images/gmailOfIcon.svg'),
                   ],
                 ),
               ],
@@ -106,11 +153,12 @@ class AuthPage extends StatelessWidget {
         ),
       ),
     );
+  
   }
 
-  Widget _socialButton(BuildContext context, String assetPath) {
+  Widget _socialButton(BuildContext context, Future<User?> Function() onTap, String assetPath) {
     return InkWell(
-      onTap: () {},
+      onTap: () => onTap(),
       borderRadius: BorderRadius.circular(50),
       child: Container(
         width: 56,
