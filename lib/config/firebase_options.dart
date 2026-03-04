@@ -29,9 +29,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'find-thing-main.firebasestorage.app',
   );
 
-  // TODO: Replace iosClientId with the real CLIENT_ID from GoogleService-Info.plist
-  // Download the latest GoogleService-Info.plist from Firebase Console
-  // and copy the CLIENT_ID value here.
+ 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBNTplJHPF_bgwhNa3_OcJpfbHEADaZB8c',
     appId: '1:858841789135:ios:ce72d0180dde4c4f163dba',

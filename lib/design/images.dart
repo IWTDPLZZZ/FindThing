@@ -11,4 +11,3 @@ final SvgPicture mainPage = SvgPicture.asset('assets/images/mainPage.svg');
 final SvgPicture pic1 = SvgPicture.asset('assets/images/pic1.svg');
 final SvgPicture pic2 = SvgPicture.asset('assets/images/pic2.svg');
 final SvgPicture grayLine = SvgPicture.asset('assets/images/grayLine.svg');
-// imprPage was SVG with embedded PNG - use Image.asset('assets/images/imprPage.png') instead

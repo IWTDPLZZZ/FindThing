@@ -4,7 +4,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
   Future<User?> authWithEmail(String email, String password) async {
     try {
       final UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -20,8 +20,11 @@ class AuthService {
   Future<User?> authWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        return null;
+      }
       final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+          await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -49,6 +52,14 @@ class AuthService {
       return result.user;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<void> resetPasswordEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

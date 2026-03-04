@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:find_thing/screens/first_page.dart';
-import 'package:find_thing/screens/auth_page.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:find_thing/config/firebase_options.dart';
+import 'package:find_thing/screens/auth_page.dart';
+import 'package:find_thing/screens/second_page.dart';
+import 'package:find_thing/services/wapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const FindThingApp());
+  runApp(
+    StreamProvider<User?>.value(
+      value: FirebaseAuth.instance.authStateChanges(),
+      initialData: FirebaseAuth.instance.currentUser,
+      child: const FindThingApp(),
+    ),
+  );
 }
 
 class FindThingApp extends StatelessWidget {
@@ -23,7 +32,9 @@ class FindThingApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(),
+        appBarTheme: AppBarTheme(
+          
+        ),
         textTheme: TextTheme(),
         inputDecorationTheme: InputDecorationTheme(),
         elevatedButtonTheme: ElevatedButtonThemeData(),
@@ -34,10 +45,11 @@ class FindThingApp extends StatelessWidget {
         fontFamily: 'Inter',
       ),
       routes: {
-        '/': (context) => const FirstPage(),
+        '/': (context) => const Wapper(),
         '/auth': (context) => const AuthPage(),
+        '/second_page': (context) => const SecondPage(),
       },
-      // home: const FirstPage(),
+      initialRoute: '/',
     );
   }
 }

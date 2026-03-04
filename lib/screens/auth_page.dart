@@ -93,7 +93,28 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final email = _emailController.text.trim();
+                    if (email.isEmpty) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Введите email для сброса пароля')),
+                      );
+                      return;
+                    }
+                    try {
+                      await _authService.resetPasswordEmail(email);
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Письмо для сброса пароля отправлено')),
+                      );
+                    } catch (_) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Не удалось отправить письмо')),
+                      );
+                    }
+                  },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: paddingButtonHorizontal,
@@ -110,7 +131,10 @@ class _AuthPageState extends State<AuthPage> {
                   child: const Text('Забыли пароль?'),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final _ = await _authService.authWithEmail(_emailController.text, _passwordController.text);
+                    
+                  },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: paddingTextButtonHorizontal,
@@ -125,6 +149,7 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                   ),
                   child: const Text('Зарегистрироваться'),
+                 
                 ),
                 const SizedBox(height: gapS),
                 ElevatedButton(
@@ -142,7 +167,7 @@ class _AuthPageState extends State<AuthPage> {
                     final user = await _authService.authWithEmail(email, password);
                     if (!context.mounted) return;
                     if (user != null) {
-                      Navigator.pushNamed(context, '/main');
+                      Navigator.pushNamed(context, '/second_page');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Не удалось войти')),
