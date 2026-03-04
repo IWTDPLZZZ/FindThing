@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:find_thing/firstPage.dart';
-import 'package:find_thing/authpage.dart';
+import 'package:find_thing/screens/first_page.dart';
+import 'package:find_thing/screens/auth_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:find_thing/config/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,8 +21,17 @@ class FindThingApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Find Thing',
       theme: ThemeData(
-        primaryColor: Color.fromARGB(255, 255, 255, 255),
-        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+        primaryColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(),
+        textTheme: TextTheme(),
+        inputDecorationTheme: InputDecorationTheme(),
+        elevatedButtonTheme: ElevatedButtonThemeData(),
+        textButtonTheme: TextButtonThemeData(),
+        outlinedButtonTheme: OutlinedButtonThemeData(),
+        iconTheme: IconThemeData(),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        fontFamily: 'Inter',
       ),
       routes: {
         '/': (context) => const FirstPage(),
