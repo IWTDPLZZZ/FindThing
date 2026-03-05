@@ -15,6 +15,7 @@ class _AuthPageState extends State<AuthPage> {
   final AuthService _authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLogin = true;
 
   @override
   void dispose() {
@@ -23,10 +24,39 @@ class _AuthPageState extends State<AuthPage> {
     super.dispose();
   }
 
+  Future<void> _submit() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Пожалуйста, заполните все поля')),
+      );
+      return;
+    }
+
+    final User? user;
+    if (_isLogin) {
+      user = await _authService.authWithEmail(email, password);
+    } else {
+      user = await _authService.registerWithEmail(email, password);
+    }
+
+    if (!context.mounted) return;
+
+    if (user != null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/final_page', (_) => false);
+    } else {
+      final errorMsg = _authService.lastError ??
+          (_isLogin ? 'Не удалось войти' : 'Не удалось зарегистрироваться');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: SafeArea(
         child: Center(
           child: SizedBox(
@@ -35,9 +65,9 @@ class _AuthPageState extends State<AuthPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Вход в систему',
-                  style: TextStyle(
+                Text(
+                  _isLogin ? 'Вход в систему' : 'Регистрация',
+                  style: const TextStyle(
                     fontSize: fontSizeTitle,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Inter',
@@ -50,6 +80,7 @@ class _AuthPageState extends State<AuthPage> {
                   width: fieldWidth,
                   child: TextField(
                     controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'Email',
                       hintStyle: const TextStyle(
@@ -92,48 +123,56 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () async {
-                    final email = _emailController.text.trim();
-                    if (email.isEmpty) {
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Введите email для сброса пароля')),
-                      );
-                      return;
-                    }
-                    try {
-                      await _authService.resetPasswordEmail(email);
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Письмо для сброса пароля отправлено')),
-                      );
-                    } catch (_) {
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Не удалось отправить письмо')),
-                      );
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: paddingButtonHorizontal,
-                      vertical: paddingButtonVertical,
+                if (_isLogin)
+                  TextButton(
+                    onPressed: () async {
+                      final email = _emailController.text.trim();
+                      if (email.isEmpty) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Введите email для сброса пароля'),
+                          ),
+                        );
+                        return;
+                      }
+                      try {
+                        await _authService.resetPasswordEmail(email);
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Письмо для сброса пароля отправлено'),
+                          ),
+                        );
+                      } catch (_) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Не удалось отправить письмо'),
+                          ),
+                        );
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: paddingButtonHorizontal,
+                        vertical: paddingButtonVertical,
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: fontSizeBody,
+                        fontWeight: FontWeight.normal,
+                        fontFamily: 'Inter',
+                        color: memory,
+                        letterSpacing: letterSpacingWide,
+                      ),
                     ),
-                    textStyle: const TextStyle(
-                      fontSize: fontSizeBody,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'Inter',
-                      color: memory,
-                      letterSpacing: letterSpacingWide,
-                    ),
+                    child: const Text('Забыли пароль?'),
                   ),
-                  child: const Text('Забыли пароль?'),
-                ),
                 TextButton(
-                  onPressed: () async {
-                    final _ = await _authService.authWithEmail(_emailController.text, _passwordController.text);
-                    
+                  onPressed: () {
+                    setState(() {
+                      _isLogin = !_isLogin;
+                    });
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -148,32 +187,15 @@ class _AuthPageState extends State<AuthPage> {
                       letterSpacing: letterSpacingWide,
                     ),
                   ),
-                  child: const Text('Зарегистрироваться'),
-                 
+                  child: Text(
+                    _isLogin
+                        ? 'Нет аккаунта? Зарегистрироваться'
+                        : 'Уже есть аккаунт? Войти',
+                  ),
                 ),
                 const SizedBox(height: gapS),
                 ElevatedButton(
-                  onPressed: () async {
-                    final email = _emailController.text;
-                    final password = _passwordController.text;
-                    if (email.isEmpty || password.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Пожалуйста, заполните все поля'),
-                        ),
-                      );
-                      return;
-                    }
-                    final user = await _authService.authWithEmail(email, password);
-                    if (!context.mounted) return;
-                    if (user != null) {
-                      Navigator.pushNamed(context, '/second_page');
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Не удалось войти')),
-                      );
-                    }
-                  },
+                  onPressed: _submit,
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(contentWidth, loginButtonHeight),
                     padding: const EdgeInsets.symmetric(
@@ -186,21 +208,22 @@ class _AuthPageState extends State<AuthPage> {
                     backgroundColor: lightBlue,
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text('Войти'),
+                  child: Text(_isLogin ? 'Войти' : 'Зарегистрироваться'),
                 ),
                 const SizedBox(height: gapXL),
                 Row(
                   children: [
                     Expanded(
-                      child: SvgPicture.asset('assets/images/LeftGrayLine.svg'),
+                      child:
+                          SvgPicture.asset('assets/images/LeftGrayLine.svg'),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: paddingContentHorizontal,
                       ),
-                      child: const Text(
-                        'Или войдите через',
-                        style: TextStyle(
+                      child: Text(
+                        _isLogin ? 'Или войдите через' : 'Или зарегистрируйтесь через',
+                        style: const TextStyle(
                           fontSize: fontSizeBody,
                           fontWeight: FontWeight.normal,
                           fontFamily: 'Inter',
@@ -210,7 +233,8 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                     ),
                     Expanded(
-                      child: SvgPicture.asset('assets/images/RightGrayLine.svg'),
+                      child:
+                          SvgPicture.asset('assets/images/RightGrayLine.svg'),
                     ),
                   ],
                 ),
@@ -245,7 +269,13 @@ class _AuthPageState extends State<AuthPage> {
     String assetPath,
   ) {
     return InkWell(
-      onTap: () => onTap(),
+      onTap: () async {
+        final user = await onTap();
+        if (!context.mounted) return;
+        if (user != null) {
+          Navigator.pushNamedAndRemoveUntil(context, '/final_page', (_) => false);
+        }
+      },
       borderRadius: BorderRadius.circular(radiusSocialButton),
       child: Container(
         width: socialButtonSize,

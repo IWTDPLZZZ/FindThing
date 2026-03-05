@@ -5,15 +5,56 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  String? _lastError;
+  String? get lastError => _lastError;
+
   Future<User?> authWithEmail(String email, String password) async {
+    _lastError = null;
     try {
       final UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       return result.user;
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      _lastError = _mapFirebaseError(e.code);
       return null;
+    }
+  }
+
+  Future<User?> registerWithEmail(String email, String password) async {
+    _lastError = null;
+    try {
+      final UserCredential result = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return result.user;
+    } on FirebaseAuthException catch (e) {
+      _lastError = _mapFirebaseError(e.code);
+      return null;
+    }
+  }
+
+  String _mapFirebaseError(String code) {
+    switch (code) {
+      case 'email-already-in-use':
+        return 'Этот email уже зарегистрирован';
+      case 'invalid-email':
+        return 'Некорректный email';
+      case 'weak-password':
+        return 'Пароль должен содержать минимум 6 символов';
+      case 'user-not-found':
+        return 'Пользователь не найден';
+      case 'wrong-password':
+        return 'Неверный пароль';
+      case 'invalid-credential':
+        return 'Неверный email или пароль';
+      case 'too-many-requests':
+        return 'Слишком много попыток. Попробуйте позже';
+      default:
+        return 'Произошла ошибка ($code)';
     }
   }
 
@@ -61,5 +102,7 @@ class AuthService {
     } catch (e) {
       throw Exception(e);
     }
+
   }
+  
 }

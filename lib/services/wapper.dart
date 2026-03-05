@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:find_thing/screens/auth_page.dart';
-import 'package:find_thing/screens/second_page.dart';
+import 'package:find_thing/screens/first_page.dart';
 
-class Wapper extends StatelessWidget {
+class Wapper extends StatefulWidget {
   const Wapper({super.key});
+
+  @override
+  State<Wapper> createState() => _WapperState();
+}
+
+class _WapperState extends State<Wapper> {
+  bool _hasNavigated = false;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
-    if (user == null) {
-      return const AuthPage();
+
+    if (user != null && !_hasNavigated) {
+      _hasNavigated = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamedAndRemoveUntil(context, '/final_page', (_) => false);
+      });
     }
-    return const SecondPage();
+
+    return const FirstPage();
   }
 }
