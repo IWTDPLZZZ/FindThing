@@ -60,3 +60,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + appBarDividerHeight);
 }
+class CustomBarForMainPage extends StatelessWidget implements PreferredSizeWidget {
+  const CustomBarForMainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      centerTitle: true,
+      title: RichText(
+        text: TextSpan(
+          style: TextStyle(fontSize: fontSizeAppBarTitle, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, fontFamily: 'CupertinoSystemDisplay'),
+          children: [
+            TextSpan(text: 'Find', style: TextStyle(color: blueName)),
+            TextSpan(text: 'Thing', style: TextStyle(color: blackName)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + appBarDividerHeight);
+}
