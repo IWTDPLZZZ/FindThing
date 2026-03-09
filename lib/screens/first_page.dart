@@ -1,6 +1,5 @@
 import 'package:find_thing/design/design.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:find_thing/widgets/custom_appbar.dart';
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});

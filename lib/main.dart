@@ -4,7 +4,7 @@ import 'package:find_thing/config/firebase_options.dart';
 import 'package:find_thing/screens/auth_page.dart';
 import 'package:find_thing/screens/first_page.dart';
 import 'package:find_thing/screens/third_page.dart';
-
+import 'package:find_thing/screens/main_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -33,7 +33,7 @@ class FindThingApp extends StatelessWidget {
         fontFamily: 'Inter',
       ),
       routes: {
-        '/': (context) => const FirstPage(),
+        '/': (context) => const MainPage(),
         '/auth': (context) => const AuthPage(),
         '/final_page': (context) => const FinalPage(),
       },
