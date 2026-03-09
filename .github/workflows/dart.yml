@@ -1,0 +1,64 @@
+name: Parallel Flutter Build
+
+on:
+  push:
+    branches: [ "main", "develop", "custom" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # --- РАБОТА 1: Сборка для Android ---
+  android-build:
+    runs-on: ubuntu-latest # Linux быстрее и дешевле для Android
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      # Сохраняем готовый APK, чтобы его можно было скачать
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  # --- РАБОТА 2: Сборка для iOS ---
+  ios-build:
+    runs-on: macos-latest # iOS требует macOS
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      # Сохраняем сборку iOS (как архив)
+      - name: Upload iOS Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: build/ios/iphoneos/Runner.app
