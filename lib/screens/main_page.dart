@@ -13,7 +13,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(appBar: const CustomBarForMainPage(), body: 
     Center(child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
       
       SizedBox(height: gapL),
@@ -35,31 +35,10 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       ),
-      
-    
+    SizedBox(height: gapM),
       Text('Привет, @username!', style: TextStyle(fontSize: fontSizeBody, fontWeight: FontWeight.bold, fontFamily: 'Inter', color: blackName, letterSpacing: letterSpacingWide),),
-
-      
-      SizedBox(height: gapL),
-      SizedBox(
-        width: radiusSearchFieldAllThings,child: 
-      Align(
-        alignment: Alignment.centerLeft,
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Все вещи и коробки',
-            hintStyle: TextStyle(fontSize: fontSizeBody, fontWeight: FontWeight.normal, fontFamily: 'Inter', color: gray, letterSpacing: letterSpacingWide),
-            filled: true,
-            fillColor: grayField,
-            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15), 
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: grayFieldText),
-              borderRadius: BorderRadius.circular(radiusSearchFieldAllThings),
-            ),
-          ),
-        ),
-      ),
-      ),
-    ],),),);
+    SizedBox(height: gapM),
+     ]),)
+     );
   }
 }

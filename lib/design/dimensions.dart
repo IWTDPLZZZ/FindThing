@@ -9,6 +9,7 @@ const double lineHeightButton = 1.5;
 
 // --- Border Radii ---
 const double radiusField = 30.0;
+const double radiusSearchFieldAllThings = 30.0;
 const double searchFieldRadiusMain = 50.0;
 const double radiusOnboardingButton = 20.0;
 const double radiusLoginButton = 40.0;
