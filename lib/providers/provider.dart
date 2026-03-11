@@ -28,7 +28,16 @@ class ProviderItem extends ChangeNotifier {
       _location.add(trimLocation);
       _indexLocation = _location.length - 1;
       notifyListeners();
-  
     }
+  }
+
+  void deleteLocation(String location) {
+    String trimLocation = location.trim();
+    if (trimLocation.isEmpty) {
+      return;
+    }
+    _location.remove(trimLocation);
+    _indexLocation = _location.length - 1;
+    notifyListeners();
   }
 }

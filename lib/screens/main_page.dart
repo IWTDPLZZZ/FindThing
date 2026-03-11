@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:find_thing/widgets/custom_appbar.dart';
 import 'package:find_thing/design/design.dart';
 import 'package:provider/provider.dart';
-import 'package:find_thing/services/provider.dart';
+import 'package:find_thing/providers/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
