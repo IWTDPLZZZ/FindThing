@@ -7,3 +7,4 @@ const Color blackName = Color(0xFF000000);
 const Color grayField = Color(0xFFF0EFEF);
 const Color grayFieldText = Color(0xFFB3B1B1);
 const Color memory = Color(0xFF3705FF);
+const Color navigationBarColor = Color(0xFFF6F6F6);

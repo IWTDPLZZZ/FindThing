@@ -37,8 +37,8 @@ class FindThingApp extends StatelessWidget {
         fontFamily: 'Inter',
       ),
       routes: {
-        '/': (context) => const MainPage(),
-
+        '/': (context) => const FirstPage(),
+        '/main_page': (context) => const MainPage(),
         '/auth': (context) => const AuthPage(),
         '/final_page': (context) => const FinalPage(),
       },

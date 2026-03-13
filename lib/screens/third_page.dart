@@ -57,7 +57,8 @@ class FinalPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      '/second_page',
+                      // '/second_page',
+                      '/main_page',
                       (_) => false,
                     );
                   },
