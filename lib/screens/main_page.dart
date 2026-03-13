@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:find_thing/widgets/custom_appbar.dart';
 import 'package:find_thing/design/design.dart';
 import 'package:provider/provider.dart';
@@ -200,7 +201,7 @@ class MainBottomNavigationBar extends StatelessWidget {
 
           Positioned(
             top: 0,
-            left: 149,
+            left: 150,
             child: Container(
               width: fabSize,
               height: fabSize,
@@ -277,6 +278,50 @@ class _BottomNavItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ItemCard extends StatelessWidget {
+  final StorageItemMain item;
+  const ItemCard({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: grayFieldText),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.file(
+              File(item.pathImage),
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
+          ),
+           const SizedBox(width: 16),
+           Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item.name, style: TextStyle(fontSize: fontSizeBody, fontWeight: FontWeight.bold, fontFamily: 'Inter', color: blackName, letterSpacing: letterSpacingWide),),
+              const SizedBox(height: 8),
+              Text(
+                'Место: ${item.place}',
+                style: TextStyle(fontSize: fontSizeBody, fontWeight: FontWeight.normal, fontFamily: 'Inter', color: gray, letterSpacing: letterSpacingWide),
+              )
+            ],
+           ))
+        ],
+      )
+      
     );
   }
 }
