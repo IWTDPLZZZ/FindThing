@@ -4,6 +4,7 @@ import 'package:find_thing/widgets/custom_appbar.dart';
 import 'package:find_thing/design/design.dart';
 import 'package:provider/provider.dart';
 import 'package:find_thing/providers/provider.dart';
+import 'package:find_thing/models/storage_item_main_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -282,7 +283,7 @@ class _BottomNavItem extends StatelessWidget {
 }
 
 class ItemCard extends StatelessWidget {
-  final StorageItemMain item;
+  final StorageItemMainPage item;
   const ItemCard({super.key, required this.item});
 
   @override

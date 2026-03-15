@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:find_thing/models/storage_item_main_page.dart';
 class ProviderItem extends ChangeNotifier {
   final List<String> _location = ['Все', 'Коробка 1', 'Коробка 2', 'Коробка 3'];
   int _indexLocation = 0;
@@ -42,34 +42,25 @@ class ProviderItem extends ChangeNotifier {
   }
 }
 
-class StorageItemMain {
-  final String name;
-  final String place;
-  final String pathImage;
-  StorageItemMain({
-    required this.name,
-    required this.place,
-    required this.pathImage,
-  });
-}
+
 
 class ItemsAddProvider extends ChangeNotifier {
-  List<StorageItemMain> _items = [];
-  List<StorageItemMain> get items => _items;
+  List<StorageItemMainPage> _items = [];
+  List<StorageItemMainPage> get items => _items;
 
-  void addItems(StorageItemMain item) {
+  void addItems(StorageItemMainPage item) {
     _items.add(item);
     notifyListeners();
   }
 
-  void deleteItems(StorageItemMain item) {
+  void deleteItems(StorageItemMainPage item) {
     _items.remove(item);
     notifyListeners();
   }
 
-  void updateItems(StorageItemMain item) {
+  void updateItems(StorageItemMainPage item) {
     final int index = _items.indexWhere(
-      (StorageItemMain element) => element.name == item.name,
+      (StorageItemMainPage element) => element.name == item.name,
     );
     if (index == -1) {
       return;
