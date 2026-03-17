@@ -38,35 +38,14 @@ class _SecondPageState extends State<SecondPage> {
                 const Text(
                   'Регистрация в системе',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: fontSizeTitle,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Inter',
-                    color: blackName,
-                    letterSpacing: 0,
-                  ),
+                  style: textStyleTitle,
                 ),
                 const SizedBox(height: gapXXL),
                 SizedBox(
                   width: fieldWidth,
                   child: TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      hintStyle: const TextStyle(
-                        fontSize: fontSizeBody,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Inter',
-                        color: gray,
-                        letterSpacing: letterSpacingWide,
-                      ),
-                      filled: true,
-                      fillColor: grayField,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: grayFieldText),
-                        borderRadius: BorderRadius.circular(radiusField),
-                      ),
-                    ),
+                    decoration: authInputDecoration(hintText: 'Email'),
                   ),
                 ),
                 const SizedBox(height: gapM),
@@ -75,22 +54,7 @@ class _SecondPageState extends State<SecondPage> {
                   child: TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Пароль',
-                      hintStyle: const TextStyle(
-                        fontSize: fontSizeBody,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Inter',
-                        color: gray,
-                        letterSpacing: letterSpacingWide,
-                      ),
-                      filled: true,
-                      fillColor: grayField,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: grayFieldText),
-                        borderRadius: BorderRadius.circular(radiusField),
-                      ),
-                    ),
+                    decoration: authInputDecoration(hintText: 'Пароль'),
                   ),
                 ),
                 const SizedBox(height: gapS),
@@ -120,26 +84,10 @@ class _SecondPageState extends State<SecondPage> {
                       );
                     }
                   },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(contentWidth, loginButtonHeight),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: paddingButtonHorizontal,
-                      vertical: paddingButtonVertical,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(radiusLoginButton),
-                    ),
-                    side: const BorderSide(color: lightBlue, width: 2),
-                    foregroundColor: lightBlue,
-                  ),
+                  style: outlinedButtonPrimaryStyle,
                   child: const Text(
                     'Зарегистрироваться',
-                    style: TextStyle(
-                      fontSize: fontSizeBody,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                      letterSpacing: letterSpacingWide,
-                    ),
+                    style: textStyleButtonLabel,
                   ),
                 ),
                 ],

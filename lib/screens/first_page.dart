@@ -77,58 +77,26 @@ class FirstPage extends StatelessWidget {
                     const Text(
                       'Хватит искать',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: fontSizeHeadline,
-                        fontWeight: FontWeight.bold,
-                        color: blackName,
-                        fontFamily: 'Inter',
-                        letterSpacing: 0,
-                      ),
+                      style: textStyleHeadline,
                     ),
                     const Text(
                       'Пора находить!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: fontSizeHeadline,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Inter',
-                        color: blackName,
-                        letterSpacing: 0,
-                      ),
+                      style: textStyleHeadline,
                     ),
                     const SizedBox(height: gapL),
                     const Text(
                       'Инвентаризация личных вещей на базе ИИ.\n'
                       'Забудьте о потерянных вещах!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: fontSizeBody,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Inter',
-                        color: gray,
-                        letterSpacing: 0,
-                      ),
+                      style: textStyleBodyTight,
                     ),
                     const SizedBox(height: gapXL),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/auth');
                       },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, onboardingButtonHeight),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(radiusOnboardingButton),
-                        ),
-                        backgroundColor: lightBlue,
-                        foregroundColor: Colors.white,
-                        textStyle: const TextStyle(
-                          height: lineHeightButton,
-                          fontSize: fontSizeButtonLabel,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Inter',
-                          color: Colors.white,
-                        ),
-                      ),
+                      style: elevatedButtonOnboardingStyle,
                       child: const Text('Начать'),
                     ),
                   ],

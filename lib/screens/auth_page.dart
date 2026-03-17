@@ -67,13 +67,7 @@ class _AuthPageState extends State<AuthPage> {
               children: [
                 Text(
                   _isLogin ? 'Вход в систему' : 'Регистрация',
-                  style: const TextStyle(
-                    fontSize: fontSizeTitle,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Inter',
-                    color: blackName,
-                    letterSpacing: 0,
-                  ),
+                  style: textStyleTitle,
                 ),
                 const SizedBox(height: gapXXL),
                 SizedBox(
@@ -81,22 +75,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      hintStyle: const TextStyle(
-                        fontSize: fontSizeBody,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Inter',
-                        color: gray,
-                        letterSpacing: letterSpacingWide,
-                      ),
-                      filled: true,
-                      fillColor: grayField,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: grayFieldText),
-                        borderRadius: BorderRadius.circular(radiusField),
-                      ),
-                    ),
+                    decoration: authInputDecoration(hintText: 'Email'),
                   ),
                 ),
                 const SizedBox(height: gapM),
@@ -105,22 +84,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Пароль',
-                      hintStyle: const TextStyle(
-                        fontSize: fontSizeBody,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Inter',
-                        color: gray,
-                        letterSpacing: letterSpacingWide,
-                      ),
-                      filled: true,
-                      fillColor: grayField,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: grayFieldText),
-                        borderRadius: BorderRadius.circular(radiusField),
-                      ),
-                    ),
+                    decoration: authInputDecoration(hintText: 'Пароль'),
                   ),
                 ),
                 if (_isLogin)
@@ -153,19 +117,7 @@ class _AuthPageState extends State<AuthPage> {
                         );
                       }
                     },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: paddingButtonHorizontal,
-                        vertical: paddingButtonVertical,
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: fontSizeBody,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'Inter',
-                        color: memory,
-                        letterSpacing: letterSpacingWide,
-                      ),
-                    ),
+                    style: textButtonMemoryStyleWide,
                     child: const Text('Забыли пароль?'),
                   ),
                 TextButton(
@@ -174,19 +126,7 @@ class _AuthPageState extends State<AuthPage> {
                       _isLogin = !_isLogin;
                     });
                   },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: paddingTextButtonHorizontal,
-                      vertical: paddingTextButtonVertical,
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: fontSizeBody,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'Inter',
-                      color: memory,
-                      letterSpacing: letterSpacingWide,
-                    ),
-                  ),
+                  style: textButtonMemoryStyle,
                   child: Text(
                     _isLogin
                         ? 'Нет аккаунта? Зарегистрироваться'
@@ -196,18 +136,7 @@ class _AuthPageState extends State<AuthPage> {
                 const SizedBox(height: gapS),
                 ElevatedButton(
                   onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(contentWidth, loginButtonHeight),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: paddingButtonHorizontal,
-                      vertical: paddingButtonVertical,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(radiusLoginButton),
-                    ),
-                    backgroundColor: lightBlue,
-                    foregroundColor: Colors.white,
-                  ),
+                  style: elevatedButtonPrimaryStyle,
                   child: Text(_isLogin ? 'Войти' : 'Зарегистрироваться'),
                 ),
                 const SizedBox(height: gapXL),
@@ -223,13 +152,7 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       child: Text(
                         _isLogin ? 'Или войдите через' : 'Или зарегистрируйтесь через',
-                        style: const TextStyle(
-                          fontSize: fontSizeBody,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: 'Inter',
-                          color: gray,
-                          letterSpacing: letterSpacingWide,
-                        ),
+                        style: textStyleBody,
                       ),
                     ),
                     Expanded(
@@ -280,10 +203,7 @@ class _AuthPageState extends State<AuthPage> {
       child: Container(
         width: socialButtonSize,
         height: socialButtonSize,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: grayFieldText),
-        ),
+        decoration: socialButtonDecoration,
         padding: const EdgeInsets.all(socialButtonIconPadding),
         child: SvgPicture.asset(assetPath),
       ),

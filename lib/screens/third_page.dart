@@ -18,10 +18,7 @@ class FinalPage extends StatelessWidget {
                 Container(
                   width: 96,
                   height: 96,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: lightBlue,
-                  ),
+                  decoration: successIconDecoration,
                   child: const Icon(
                     Icons.check_rounded,
                     size: 52,
@@ -32,25 +29,13 @@ class FinalPage extends StatelessWidget {
                 const Text(
                   'Регистрация\nзавершена!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: fontSizeTitle,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Inter',
-                    color: blackName,
-                    letterSpacing: 0,
-                  ),
+                  style: textStyleTitle,
                 ),
                 const SizedBox(height: gapM),
                 const Text(
                   'Добро пожаловать в FindThing!\nТеперь вы можете начать пользоваться приложением.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: fontSizeBody,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'Inter',
-                    color: gray,
-                    letterSpacing: 0,
-                  ),
+                  style: textStyleBodyTight,
                 ),
                 const SizedBox(height: gapXXL),
                 ElevatedButton(
@@ -62,26 +47,10 @@ class FinalPage extends StatelessWidget {
                       (_) => false,
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(contentWidth, loginButtonHeight),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: paddingButtonHorizontal,
-                      vertical: paddingButtonVertical,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(radiusLoginButton),
-                    ),
-                    backgroundColor: lightBlue,
-                    foregroundColor: Colors.white,
-                  ),
+                  style: elevatedButtonPrimaryStyle,
                   child: const Text(
                     'Продолжить',
-                    style: TextStyle(
-                      fontSize: fontSizeBody,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                      letterSpacing: letterSpacingWide,
-                    ),
+                    style: textStyleButtonLabel,
                   ),
                 ),
               ],
