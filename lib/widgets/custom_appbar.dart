@@ -1,45 +1,53 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:find_thing/design/design.dart';
+import 'package:find_thing/theme/app_theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
+  void _onAccountTap(BuildContext context) {
+    final bool signedIn = FirebaseAuth.instance.currentUser != null;
+    if (signedIn) {
+      Navigator.pushNamed(context, '/profile');
+    } else {
+      Navigator.pushNamed(context, '/auth');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
       title: RichText(
         text: TextSpan(
-          style: TextStyle(
-            fontSize: fontSizeAppBarTitle,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.normal,
-            fontFamily: 'CupertinoSystemDisplay',
-          ),
+          style: Theme.of(context).textTheme.titleLarge,
           children: [
             TextSpan(
               text: 'Find',
-              style: TextStyle(color: blueName),
+              style: AppTheme.appBarTitleFind(context),
             ),
             TextSpan(
               text: 'Thing',
-              style: TextStyle(color: blackName),
+              style: AppTheme.appBarTitleThing(context),
             ),
           ],
         ),
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: paddingAppBarRight),
+          padding: EdgeInsets.only(right: context.appSpacing.appBarActionPaddingRight),
           child: GestureDetector(
-            onTap: () {},
+            onTap: () => _onAccountTap(context),
             child: CircleAvatar(
               radius: avatarRadius,
-              backgroundColor: gray,
+              backgroundColor: colors.surfaceContainerHighest,
               child: SvgPicture.asset(
                 'assets/images/iconOfAccount.svg',
                 width: accountIconSize,
@@ -65,17 +73,19 @@ class CustomBarForMainPage extends StatelessWidget implements PreferredSizeWidge
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
       title: RichText(
         text: TextSpan(
-          style: TextStyle(fontSize: fontSizeAppBarTitle, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, fontFamily: 'CupertinoSystemDisplay'),
+          style: Theme.of(context).textTheme.titleLarge,
           children: [
-            TextSpan(text: 'Find', style: TextStyle(color: blueName)),
-            TextSpan(text: 'Thing', style: TextStyle(color: blackName)),
+            TextSpan(text: 'Find', style: AppTheme.appBarTitleFind(context)),
+            TextSpan(text: 'Thing', style: AppTheme.appBarTitleThing(context)),
           ],
         ),
       ),

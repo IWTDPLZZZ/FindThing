@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:find_thing/models/storage_item_main_page.dart';
 
+/// Location filter tabs for the main list (e.g. boxes / "Все").
 class ProviderItem extends ChangeNotifier {
-  List<String> _location = ['Все', 'Коробка 1', 'Коробка 2', 'Коробка 3'];
+  final List<String> _location = ['Все', 'Коробка 1', 'Коробка 2', 'Коробка 3'];
   int _indexLocation = 0;
   List<String> get location => _location;
   int get indexLocation => _indexLocation;
@@ -31,13 +33,47 @@ class ProviderItem extends ChangeNotifier {
     }
   }
 
+  /// Removes a location tab. Avoids [RangeError] when the list becomes empty.
   void deleteLocation(String location) {
-    String trimLocation = location.trim();
+    final String trimLocation = location.trim();
     if (trimLocation.isEmpty) {
       return;
     }
     _location.remove(trimLocation);
-    _indexLocation = _location.length - 1;
+    if (_location.isEmpty) {
+      _indexLocation = 0;
+    } else {
+      _indexLocation = _location.length - 1;
+    }
+    notifyListeners();
+  }
+}
+
+
+
+/// Inventory items shown on the home screen; use with [Consumer] / [context.watch].
+class ItemsAddProvider extends ChangeNotifier {
+  List<StorageItemMainPage> _items = [];
+  List<StorageItemMainPage> get items => _items;
+
+  void addItems(StorageItemMainPage item) {
+    _items.add(item);
+    notifyListeners();
+  }
+
+  void deleteItems(StorageItemMainPage item) {
+    _items.remove(item);
+    notifyListeners();
+  }
+
+  void updateItems(StorageItemMainPage item) {
+    final int index = _items.indexWhere(
+      (StorageItemMainPage element) => element.name == item.name,
+    );
+    if (index == -1) {
+      return;
+    }
+    _items[index] = item;
     notifyListeners();
   }
 }

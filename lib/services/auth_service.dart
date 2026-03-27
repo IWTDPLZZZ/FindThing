@@ -3,7 +3,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
+
+  AuthService({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance;
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   String? _lastError;
@@ -102,7 +104,11 @@ class AuthService {
     } catch (e) {
       throw Exception(e);
     }
-
   }
-  
+
+  /// Signs out the current user and clears third-party auth sessions when applicable.
+  Future<void> signOut() async {
+    await GoogleSignIn().signOut();
+    await _auth.signOut();
+  }
 }

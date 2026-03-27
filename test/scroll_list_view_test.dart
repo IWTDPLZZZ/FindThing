@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:find_thing/screens/main_page.dart';
+import 'package:find_thing/theme/app_theme.dart';
+import 'package:find_thing/widgets/scroll_list_view.dart';
 import 'package:find_thing/providers/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 void main() {
-  Widget _buildTestWidget() {
+  Widget buildTestWidget() {
     return MaterialApp(
+      theme: AppTheme.light,
       home: ChangeNotifierProvider(
         create: (_) => ProviderItem(),
         child: const Scaffold(body: ScrollListView()),
       ),
     );
   }
-  testWidgets('Проверка отображения списка локаций, при загрузке приложения', 
-  (WidgetTester tester) async {
-   await tester.pumpWidget(_buildTestWidget());
-   await tester.pumpAndSettle();
-   
+
+  testWidgets('Проверка отображения списка локаций, при загрузке приложения', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ScrollListView), findsOneWidget);
   });
 }
+

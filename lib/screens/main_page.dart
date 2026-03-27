@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:find_thing/theme/app_theme.dart';
+import 'package:find_thing/widgets/profile_tab_content.dart';
 import 'package:find_thing/widgets/custom_appbar.dart';
-import 'package:find_thing/design/design.dart';
-import 'package:provider/provider.dart';
-import 'package:find_thing/providers/provider.dart';
+import 'package:find_thing/widgets/main_bottom_navigation_bar.dart'
+    show MainBottomAppBar, MainCameraFab;
+import 'package:find_thing/widgets/main_home_tab_content.dart';
 
+/// Shell with bottom navigation; each tab keeps state via [IndexedStack].
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -12,108 +15,80 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  int _currentIndex = 0;
+
+  /// Lazily built children so off-stage tabs preserve state without rebuilding roots.
+  late final List<Widget> _tabBodies = <Widget>[
+    const MainHomeTabContent(),
+    _PlaceholderTab(
+      title: 'Поиск',
+      message: 'Расширенный поиск скоро появится здесь.',
+    ),
+    _PlaceholderTab(
+      title: 'Хранилище',
+      message: 'Управление хранилищем в разработке.',
+    ),
+    const ProfileTabContent(),
+  ];
+
+  void _onNavItemTapped(int index) {
+    setState(() => _currentIndex = index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       appBar: const CustomBarForMainPage(),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: gapL),
-            SizedBox(
-              width: searchFieldWidth,
-              child: TextField(
-                // controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Название вещи или коробки...',
-                  hintStyle: TextStyle(
-                    fontSize: fontSizeBody,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'Inter',
-                    color: gray,
-                    letterSpacing: letterSpacingWide,
-                  ),
-                  filled: true,
-                  fillColor: grayField,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: grayFieldText),
-                    borderRadius: BorderRadius.circular(searchFieldRadiusMain),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: grayFieldText,
-                    size: 24,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: gapM),
-            Text(
-              'Привет, @username!',
-              style: TextStyle(
-                fontSize: fontSizeBody,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Inter',
-                color: blackName,
-                letterSpacing: letterSpacingWide,
-              ),
-            ),
-            SizedBox(height: gapM),
-            const ScrollListView(),
-          ],
-        ),
+      floatingActionButton: const MainCameraFab(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: MainBottomAppBar(
+        currentIndex: _currentIndex,
+        onItemSelected: _onNavItemTapped,
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _tabBodies,
       ),
     );
   }
 }
 
-class ScrollListView extends StatelessWidget {
-  const ScrollListView({super.key});
+class _PlaceholderTab extends StatelessWidget {
+  final String title;
+  final String message;
+
+  const _PlaceholderTab({
+    required this.title,
+    required this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final providerFilter = Provider.of<ProviderItem>(context);
-    return SizedBox(
-      height: 50,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        itemCount: providerFilter.location.length,
-        itemBuilder: (context, index) {
-          final String name = providerFilter.location[index];
-          final bool isSelected = providerFilter.indexLocation == index;
-          return GestureDetector(
-            onTap: () => providerFilter.setIndexLocation(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                color: isSelected ? blueName : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected ? blueName : grayFieldText,
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontSize: fontSizeBody,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: 'Inter', 
-                  color: isSelected ? Colors.white : gray,
-                  letterSpacing: letterSpacingWide,
-                ),
-              ),
+    final AppSpacingTheme spacing = context.appSpacing;
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: spacing.gapXL),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-          );
-        },
+            SizedBox(height: spacing.gapM),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }
