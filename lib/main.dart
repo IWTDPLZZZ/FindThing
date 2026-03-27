@@ -5,13 +5,24 @@ import 'package:find_thing/screens/auth_page.dart';
 import 'package:find_thing/screens/first_page.dart';
 import 'package:find_thing/screens/third_page.dart';
 import 'package:find_thing/screens/main_page.dart';
+import 'package:find_thing/screens/profile_page.dart';
 import 'package:find_thing/providers/provider.dart';
+import 'package:find_thing/theme/app_theme.dart';
 import 'package:provider/provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    ChangeNotifierProvider(create: (context) => ProviderItem(), child: const FindThingApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ProviderItem>(create: (_) => ProviderItem()),
+        ChangeNotifierProvider<ItemsAddProvider>(
+          create: (_) => ItemsAddProvider(),
+        ),
+      ],
+      child: const FindThingApp(),
+    ),
   );
 }
 
@@ -23,23 +34,12 @@ class FindThingApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Find Thing',
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        scaffoldBackgroundColor: Colors.white,
-        // appBarTheme: const AppBarTheme(),
-        // textTheme: const TextTheme(),
-        // inputDecorationTheme: const InputDecorationTheme(),
-        // elevatedButtonTheme: const ElevatedButtonThemeData(),
-        // textButtonTheme: const TextButtonThemeData(),
-        // outlinedButtonTheme: const OutlinedButtonThemeData(),
-        // iconTheme: const IconThemeData(),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        fontFamily: 'Inter',
-      ),
+      theme: AppTheme.light,
       routes: {
         '/': (context) => const FirstPage(),
         '/main_page': (context) => const MainPage(),
         '/auth': (context) => const AuthPage(),
+        '/profile': (context) => const ProfilePage(),
         '/final_page': (context) => const FinalPage(),
       },
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:find_thing/design/design.dart';
+import 'package:find_thing/design/dimensions.dart';
+import 'package:find_thing/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:find_thing/providers/provider.dart';
 
@@ -9,25 +10,40 @@ class ScrollListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerFilter = Provider.of<ProviderItem>(context);
+    final AppSpacingTheme spacing = context.appSpacing;
+
     return SizedBox(
-      height: 50,
+      height: chipListHeight,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.chipListHorizontalPadding,
+          vertical: spacing.chipListVerticalPadding,
+        ),
         itemCount: providerFilter.location.length,
         itemBuilder: (context, index) {
           final String name = providerFilter.location[index];
           final bool isSelected = providerFilter.indexLocation == index;
-          return GestureDetector(
-            onTap: () => providerFilter.setIndexLocation(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              margin: const EdgeInsets.only(right: 8),
-              decoration: scrollListChipDecoration(isSelected: isSelected),
-              child: Text(
-                name,
-                style: textStyleBodyChip(isSelected: isSelected),
+          return Padding(
+            padding: EdgeInsets.only(right: spacing.chipItemSpacing),
+            child: Transform.translate(
+              offset: Offset(0, isSelected ? -2.5 : 0),
+              child: GestureDetector(
+                onTap: () => providerFilter.setIndexLocation(index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutCubic,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: spacing.chipHorizontalPadding,
+                    vertical: spacing.chipVerticalPadding,
+                  ),
+                  decoration: context.appDecoration
+                      .scrollListChipDecoration(isSelected: isSelected),
+                  child: Text(
+                    name,
+                    style: AppTheme.bodyChip(context, isSelected: isSelected),
+                  ),
+                ),
               ),
             ),
           );

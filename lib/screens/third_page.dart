@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:find_thing/design/design.dart';
+import 'package:find_thing/theme/app_theme.dart';
 
 class FinalPage extends StatelessWidget {
   const FinalPage({super.key});
@@ -18,7 +19,7 @@ class FinalPage extends StatelessWidget {
                 Container(
                   width: 96,
                   height: 96,
-                  decoration: successIconDecoration,
+                  decoration: context.appDecoration.successIconDecoration,
                   child: const Icon(
                     Icons.check_rounded,
                     size: 52,
@@ -26,32 +27,27 @@ class FinalPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: gapXL),
-                const Text(
+                Text(
                   'Регистрация\nзавершена!',
                   textAlign: TextAlign.center,
-                  style: textStyleTitle,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: gapM),
-                const Text(
+                Text(
                   'Добро пожаловать в FindThing!\nТеперь вы можете начать пользоваться приложением.',
                   textAlign: TextAlign.center,
-                  style: textStyleBodyTight,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: gapXXL),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      // '/second_page',
                       '/main_page',
                       (_) => false,
                     );
                   },
-                  style: elevatedButtonPrimaryStyle,
-                  child: const Text(
-                    'Продолжить',
-                    style: textStyleButtonLabel,
-                  ),
+                  child: const Text('Продолжить'),
                 ),
               ],
             ),

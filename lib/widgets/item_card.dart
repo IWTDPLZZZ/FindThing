@@ -1,43 +1,72 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:find_thing/design/design.dart';
+import 'package:find_thing/design/dimensions.dart';
 import 'package:find_thing/models/storage_item_main_page.dart';
+import 'package:find_thing/theme/app_theme.dart';
 
 class ItemCard extends StatelessWidget {
   final StorageItemMainPage item;
 
   const ItemCard({super.key, required this.item});
 
+  Widget _imageErrorPlaceholder(BuildContext context) {
+    final AppSpacingTheme spacing = context.appSpacing;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: spacing.imageThumbSize,
+      height: spacing.imageThumbSize,
+      color: scheme.surfaceContainerHighest,
+      child: Icon(
+        Icons.broken_image_outlined,
+        color: scheme.onSurfaceVariant,
+        size: spacing.imageThumbSize * 0.4,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AppSpacingTheme spacing = context.appSpacing;
+    final String path = item.pathImage.trim();
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(10),
-      decoration: cardDecoration(),
+      margin: EdgeInsets.symmetric(
+        horizontal: spacing.cardHorizontalMargin,
+        vertical: spacing.cardVerticalMargin,
+      ),
+      padding: EdgeInsets.all(spacing.cardInnerPadding),
+      decoration: context.appDecoration.cardDecoration(),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.file(
-              File(item.pathImage),
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+            borderRadius: BorderRadius.circular(radiusItemCardImage),
+            child: path.isEmpty
+                ? _imageErrorPlaceholder(context)
+                : Image.file(
+                    File(path),
+                    width: spacing.imageThumbSize,
+                    height: spacing.imageThumbSize,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _imageErrorPlaceholder(context);
+                    },
+                  ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: spacing.cardHorizontalMargin),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   item.name,
-                  style: textStyleBodyBold,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: spacing.chipVerticalPadding),
                 Text(
                   'Место: ${item.place}',
-                  style: textStyleBody,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),

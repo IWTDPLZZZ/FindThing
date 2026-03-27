@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:find_thing/theme/app_theme.dart';
 import 'package:find_thing/widgets/scroll_list_view.dart';
 import 'package:find_thing/providers/provider.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   Widget buildTestWidget() {
     return MaterialApp(
+      theme: AppTheme.light,
       home: ChangeNotifierProvider(
         create: (_) => ProviderItem(),
         child: const Scaffold(body: ScrollListView()),

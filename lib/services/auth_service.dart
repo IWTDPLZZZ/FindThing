@@ -106,4 +106,9 @@ class AuthService {
     }
   }
 
+  /// Signs out the current user and clears third-party auth sessions when applicable.
+  Future<void> signOut() async {
+    await GoogleSignIn().signOut();
+    await _auth.signOut();
+  }
 }
