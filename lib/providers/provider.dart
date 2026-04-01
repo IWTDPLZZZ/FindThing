@@ -19,18 +19,14 @@ class ProviderItem extends ChangeNotifier {
       return;
     }
 
-    bool exist = _location.any(
+    final bool exist = _location.any(
       (element) => element.toLowerCase() == trimLocation.toLowerCase(),
     );
-    if (exist) {
-      print('Location already exists');
-      return;
-    }
-    if (!exist) {
-      _location.add(trimLocation);
-      _indexLocation = _location.length - 1;
-      notifyListeners();
-    }
+    if (exist) return;
+
+    _location.add(trimLocation);
+    _indexLocation = _location.length - 1;
+    notifyListeners();
   }
 
   /// Removes a location tab. Avoids [RangeError] when the list becomes empty.
@@ -53,8 +49,23 @@ class ProviderItem extends ChangeNotifier {
 
 /// Inventory items shown on the home screen; use with [Consumer] / [context.watch].
 class ItemsAddProvider extends ChangeNotifier {
-  List<StorageItemMainPage> _items = [];
-  List<StorageItemMainPage> get items => _items;
+  final List<StorageItemMainPage> _items = [];
+  List<StorageItemMainPage> get items => List.unmodifiable(_items);
+
+  /// Unique location names derived from stored items (preserves insertion order).
+  List<String> get uniqueLocations {
+    final seen = <String>{};
+    final result = <String>[];
+    for (final item in _items) {
+      if (seen.add(item.place)) result.add(item.place);
+    }
+    return result;
+  }
+
+  /// Items filtered by [location].
+  List<StorageItemMainPage> itemsByLocation(String location) {
+    return _items.where((item) => item.place == location).toList();
+  }
 
   void addItems(StorageItemMainPage item) {
     _items.add(item);

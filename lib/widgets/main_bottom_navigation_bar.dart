@@ -88,7 +88,8 @@ class MainBottomAppBar extends StatelessWidget {
 
 /// Center-docked camera control; size matches spacing token [bottomNavFabSize].
 class MainCameraFab extends StatelessWidget {
-  const MainCameraFab({super.key});
+  final VoidCallback? onTap;
+  const MainCameraFab({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +106,7 @@ class MainCameraFab extends StatelessWidget {
         shadowColor: accentBlueDeep.withValues(alpha: 0.4),
         child: InkWell(
           customBorder: const CircleBorder(),
-          onTap: () {},
+          onTap: onTap,
           child: Center(
             child: SizedBox(
               width: bottomNavFabInnerIconSize,

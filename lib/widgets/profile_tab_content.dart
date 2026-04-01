@@ -55,6 +55,16 @@ class ProfileTabContent extends StatelessWidget {
       children: [
         ListTile(
           title: Text(
+            'Имя',
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          subtitle: Text(
+            user.displayName ?? '—',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+        ListTile(
+          title: Text(
             'Email',
             style: Theme.of(context).textTheme.labelLarge,
           ),

@@ -1,40 +1,43 @@
 part of 'photo_item_bloc.dart';
 
 abstract class PhotoItemState extends Equatable {
-  final List<StorageItemMainPage> items;
-  const PhotoItemState({this.items = const []});
+  const PhotoItemState();
   @override
-  List<Object?> get props => [items];
+  List<Object?> get props => [];
 }
 
-class PhotoItemInitialState extends PhotoItemState {
-  const PhotoItemInitialState({super.items = const []});
+class PhotoItemIdle extends PhotoItemState {
+  const PhotoItemIdle();
 }
 
-class PhotoItemLoadingState extends PhotoItemState {
-  const PhotoItemLoadingState({required super.items});
+class PhotoItemLoading extends PhotoItemState {
+  const PhotoItemLoading();
 }
 
-class PhotoItemSuccessState extends PhotoItemState {
-  const PhotoItemSuccessState({required super.items});
-}
-
-class ItemDetected extends PhotoItemState {
+/// Gemini detected the item — waiting for user to confirm the storage place.
+class PhotoItemDetected extends PhotoItemState {
   final String name;
-  final String place;
-  final String pathImage;
-  ItemDetected({
-    required this.name,
-    required this.place,
-    required this.pathImage,
-  });
+  final String imagePath;
+  const PhotoItemDetected({required this.name, required this.imagePath});
+
   @override
-  List<Object?> get props => [name, place, pathImage];
+  List<Object?> get props => [name, imagePath];
 }
 
-class PhotoItemFeilure extends PhotoItemState {
+/// Item was confirmed and added to the inventory.
+class PhotoItemAdded extends PhotoItemState {
+  const PhotoItemAdded();
+}
+
+class PhotoItemFailure extends PhotoItemState {
   final String message;
-  const PhotoItemFeilure({required this.message, super.items = const []});
+  const PhotoItemFailure(this.message);
+
   @override
-  List<Object?> get props => [message, items];
+  List<Object?> get props => [message];
+}
+
+/// User cancelled image picker — silent return to idle.
+class PhotoItemCancelled extends PhotoItemState {
+  const PhotoItemCancelled();
 }

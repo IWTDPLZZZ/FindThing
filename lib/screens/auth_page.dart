@@ -37,6 +37,9 @@ class _AuthPageState extends State<AuthPage> {
       return;
     }
 
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
     final User? user;
     if (_isLogin) {
       user = await _authService.authWithEmail(email, password);
@@ -44,16 +47,52 @@ class _AuthPageState extends State<AuthPage> {
       user = await _authService.registerWithEmail(email, password);
     }
 
-    if (!context.mounted) return;
+    if (!mounted) return;
 
     if (user != null) {
-      Navigator.pushNamedAndRemoveUntil(context, '/final_page', (_) => false);
+      final message =
+          _isLogin ? 'Успешная авторизация' : 'Успешная регистрация';
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ));
+      navigator.popUntil((route) => route.isFirst);
     } else {
       final errorMsg = _authService.lastError ??
           (_isLogin ? 'Не удалось войти' : 'Не удалось зарегистрироваться');
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(content: Text(errorMsg)),
       );
+    }
+  }
+
+  Future<void> _handleSocialSignIn(Future<AuthResult> Function() signIn) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
+    final result = await signIn();
+    if (!mounted) return;
+
+    if (result.user != null) {
+      final message =
+          result.isNewUser ? 'Успешная регистрация' : 'Успешная авторизация';
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ));
+      navigator.popUntil((route) => route.isFirst);
+    } else {
+      final error = _authService.lastError ?? 'Не удалось войти';
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text(error),
+          behavior: SnackBarBehavior.floating,
+        ));
     }
   }
 
@@ -236,13 +275,17 @@ class _AuthPageState extends State<AuthPage> {
                         children: [
                           _socialButton(
                             context,
-                            _authService.authWithApple,
+                            () => _handleSocialSignIn(
+                              _authService.authWithApple,
+                            ),
                             'assets/images/appleOfIcon.svg',
                           ),
                           SizedBox(width: spacing.gapL),
                           _socialButton(
                             context,
-                            _authService.authWithGoogle,
+                            () => _handleSocialSignIn(
+                              _authService.authWithGoogle,
+                            ),
                             'assets/images/gmailOfIcon.svg',
                           ),
                         ],
@@ -260,7 +303,7 @@ class _AuthPageState extends State<AuthPage> {
 
   Widget _socialButton(
     BuildContext context,
-    Future<User?> Function() onTap,
+    VoidCallback onTap,
     String assetPath,
   ) {
     return SizedBox(
@@ -269,17 +312,7 @@ class _AuthPageState extends State<AuthPage> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () async {
-            final user = await onTap();
-            if (!context.mounted) return;
-            if (user != null) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/final_page',
-                (_) => false,
-              );
-            }
-          },
+          onTap: onTap,
           borderRadius: BorderRadius.circular(radiusSocialButton),
           child: Ink(
             decoration: context.appDecoration.socialButtonDecoration,

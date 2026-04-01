@@ -2,10 +2,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+class AuthResult {
+  final User? user;
+  final bool isNewUser;
+  const AuthResult({this.user, this.isNewUser = false});
+}
+
 class AuthService {
   final FirebaseAuth _auth;
 
   AuthService({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance;
+
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   String? _lastError;
@@ -39,6 +46,61 @@ class AuthService {
     }
   }
 
+  Future<AuthResult> authWithGoogle() async {
+    _lastError = null;
+    try {
+      final googleSignIn = GoogleSignIn(
+        serverClientId:
+            '858841789135-63evmvn9na6pj8cvl3cljgm0ushftdug.apps.googleusercontent.com',
+      );
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return const AuthResult();
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential result =
+          await _auth.signInWithCredential(credential);
+      final bool isNew = result.additionalUserInfo?.isNewUser ?? false;
+      return AuthResult(user: result.user, isNewUser: isNew);
+    } on FirebaseAuthException catch (e) {
+      _lastError = _mapFirebaseError(e.code);
+      return const AuthResult();
+    } catch (e) {
+      _lastError = 'Ошибка входа через Google: $e';
+      return const AuthResult();
+    }
+  }
+
+  Future<AuthResult> authWithApple() async {
+    _lastError = null;
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final credential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+      final UserCredential result =
+          await _auth.signInWithCredential(credential);
+      final bool isNew = result.additionalUserInfo?.isNewUser ?? false;
+      return AuthResult(user: result.user, isNewUser: isNew);
+    } on FirebaseAuthException catch (e) {
+      _lastError = _mapFirebaseError(e.code);
+      return const AuthResult();
+    } catch (_) {
+      _lastError = 'Ошибка входа через Apple';
+      return const AuthResult();
+    }
+  }
+
   String _mapFirebaseError(String code) {
     switch (code) {
       case 'email-already-in-use':
@@ -60,53 +122,14 @@ class AuthService {
     }
   }
 
-  Future<User?> authWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        return null;
-      }
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final UserCredential result = await _auth.signInWithCredential(credential);
-      return result.user;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<User?> authWithApple() async {
-    try {
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
-      final credential = OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
-      );
-      final UserCredential result = await _auth.signInWithCredential(credential);
-      return result.user;
-    } catch (e) {
-      return null;
-    }
-  }
-
   Future<void> resetPasswordEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      throw Exception(e);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_mapFirebaseError(e.code));
     }
   }
 
-  /// Signs out the current user and clears third-party auth sessions when applicable.
   Future<void> signOut() async {
     await GoogleSignIn().signOut();
     await _auth.signOut();
